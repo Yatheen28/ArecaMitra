@@ -1,11 +1,11 @@
 import React, { useState, useRef } from 'react';
-import { Leaf, Upload, Camera, Link as LinkIcon, ArrowLeft, Loader2 } from 'lucide-react';
+import { Leaf, Camera, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8000';
 
 type AppState = 'upload' | 'loading' | 'result';
 type Language = 'en' | 'kn';
@@ -62,7 +62,7 @@ export default function App() {
   const [lang, setLang] = useState<Language>('en');
   const [appState, setAppState] = useState<AppState>('upload');
   const [activeTab, setActiveTab] = useState<'gallery' | 'camera'>('gallery');
-  
+
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [prediction, setPrediction] = useState<Prediction | null>(null);
@@ -133,23 +133,22 @@ export default function App() {
     setAppState('upload');
   };
 
-  // Circular progress component for confidence
   const ConfidenceRing = ({ value }: { value: number }) => {
     const radius = 35;
     const circumference = 2 * Math.PI * radius;
     const strokeDashoffset = circumference - (value / 100) * circumference;
-    
+
     return (
       <div className="relative w-24 h-24 flex items-center justify-center">
         <svg className="w-full h-full transform -rotate-90">
-          <circle 
-            cx="48" cy="48" r="35" 
-            className="stroke-[#2A6B2C] fill-none" 
-            strokeWidth="8" 
+          <circle
+            cx="48" cy="48" r="35"
+            className="stroke-[#2A6B2C] fill-none"
+            strokeWidth="8"
           />
-          <motion.circle 
-            cx="48" cy="48" r="35" 
-            className="stroke-[#4CAF50] fill-none drop-shadow-md" 
+          <motion.circle
+            cx="48" cy="48" r="35"
+            className="stroke-[#4CAF50] fill-none drop-shadow-md"
             strokeWidth="8"
             strokeLinecap="round"
             initial={{ strokeDashoffset: circumference }}
@@ -167,7 +166,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#0D2414] text-[#E3E3DE] font-['Manrope',sans-serif] selection:bg-[#1B5E20] selection:text-white flex flex-col">
-      {/* Top Bar */}
       <header className="p-6 flex justify-between items-center max-w-2xl mx-auto w-full">
         <div className="flex items-center gap-3">
           <div className="bg-gradient-to-br from-[#00450d] to-[#1B5E20] p-2.5 rounded-xl shadow-lg shadow-[#000000]/20">
@@ -175,8 +173,8 @@ export default function App() {
           </div>
           <h1 className="text-xl font-bold tracking-tight text-[#fafaf5]">{t.title}</h1>
         </div>
-        
-        <button 
+
+        <button
           onClick={() => setLang(lang === 'en' ? 'kn' : 'en')}
           className="bg-[#1A3A24] hover:bg-[#2A6B2C] transition-colors rounded-full px-4 py-1.5 text-sm font-semibold flex items-center shadow-inner border border-[#2f7f33]/30"
         >
@@ -186,10 +184,9 @@ export default function App() {
         </button>
       </header>
 
-      {/* Main Content */}
       <main className="flex-1 flex flex-col justify-center p-4 w-full max-w-md mx-auto relative h-full">
         <AnimatePresence mode="wait">
-          
+
           {appState === 'upload' && (
             <motion.div
               key="upload"
@@ -200,27 +197,25 @@ export default function App() {
             >
               <Card className="bg-[#18231c] border-none shadow-[0_12px_32px_rgba(0,0,0,0.4)] rounded-3xl p-8 overflow-hidden relative">
                 <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
-                
+
                 <div className="relative z-10 flex flex-col items-center">
                   <div className="w-20 h-20 bg-gradient-to-br from-[#4ade80] to-[#22c55e] rounded-[1.25rem] flex items-center justify-center mb-5 shadow-[0_0_20px_rgba(34,197,94,0.3)]">
                     <Leaf className="w-10 h-10 text-white stroke-[1.5]" />
                   </div>
                   <h2 className="text-[28px] font-bold text-white text-center leading-tight mb-2">Areca Mitra</h2>
                   <p className="text-[#a1a1aa] text-center mb-8 font-medium">AI-Powered Areca Nut Disease Detection</p>
-                  
                   <p className="text-[#d4d4d8] text-center mb-4 text-[15px] font-medium">Choose how you want to upload the crop image</p>
                 </div>
-                
-                {/* Tabs */}
+
                 <div className="flex bg-[#09090b] rounded-xl p-1.5 mb-8 relative z-10 w-full max-w-[280px] mx-auto">
-                  <button 
+                  <button
                     onClick={() => setActiveTab('gallery')}
                     className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'gallery' ? 'bg-[#22c55e] text-white shadow-md' : 'text-[#a1a1aa] hover:text-white'}`}
                   >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg>
                     {t.galleryTab}
                   </button>
-                  <button 
+                  <button
                     onClick={() => setActiveTab('camera')}
                     className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'camera' ? 'bg-[#22c55e] text-white shadow-md' : 'text-[#a1a1aa] hover:text-white'}`}
                   >
@@ -228,11 +223,10 @@ export default function App() {
                   </button>
                 </div>
 
-                {/* Upload Zone */}
                 <div className="flex flex-col justify-center items-center relative z-10">
                   {!previewUrl ? (
-                    <div 
-                      className={`w-full min-h-[200px] p-8 border-[1.5px] border-dashed rounded-[1.5rem] flex flex-col items-center justify-center cursor-pointer transition-colors hover:bg-[#22c55e]/10 border-[#4a5f51] bg-[#1a2e22]/30`}
+                    <div
+                      className="w-full min-h-[200px] p-8 border-[1.5px] border-dashed rounded-[1.5rem] flex flex-col items-center justify-center cursor-pointer transition-colors hover:bg-[#22c55e]/10 border-[#4a5f51] bg-[#1a2e22]/30"
                       onClick={() => activeTab === 'camera' ? cameraInputRef.current?.click() : fileInputRef.current?.click()}
                       onDragOver={handleDragOver}
                       onDrop={handleDrop}
@@ -247,7 +241,7 @@ export default function App() {
                       ) : (
                         <>
                           <div className="mb-4 text-[#4ade80]">
-                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" x2="12" y1="3" y2="15" /></svg>
                           </div>
                           <p className="font-bold text-white text-center text-[15px] mb-2">{t.dragDrop}</p>
                           <p className="text-sm text-[#a1a1aa] font-medium">{t.supportsFormat}</p>
@@ -255,17 +249,17 @@ export default function App() {
                       )}
                     </div>
                   ) : (
-                    <motion.div 
+                    <motion.div
                       className="w-full relative rounded-[1.5rem] overflow-hidden shadow-lg"
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                     >
                       <img src={previewUrl} alt="Preview" className="w-full h-[220px] object-cover" />
-                      <button 
+                      <button
                         onClick={(e) => { e.stopPropagation(); setPreviewUrl(null); setSelectedImage(null); }}
                         className="absolute top-3 right-3 bg-black/60 hover:bg-black/80 text-white rounded-full p-2 backdrop-blur-sm transition-colors"
                       >
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
                       </button>
                     </motion.div>
                   )}
@@ -279,8 +273,8 @@ export default function App() {
                 )}
 
                 {previewUrl && (
-                  <Button 
-                    onClick={handleAnalyze} 
+                  <Button
+                    onClick={handleAnalyze}
                     className="w-full mt-6 bg-gradient-to-br from-[#1B5E20] to-[#00450d] hover:from-[#2a6b2c] hover:to-[#0c5216] text-white rounded-xl py-6 text-lg shadow-[0_8px_16px_rgba(0,0,0,0.25)] border-t border-[#4CAF50]/30 transition-all font-semibold"
                   >
                     {t.analyze}
@@ -316,7 +310,7 @@ export default function App() {
               animate={{ opacity: 1, x: 0 }}
               className="flex flex-col gap-4"
             >
-              <button 
+              <button
                 onClick={resetState}
                 className="flex items-center gap-2 text-[#c0c9bb] hover:text-white transition-colors self-start py-2 font-medium"
               >
@@ -326,7 +320,7 @@ export default function App() {
 
               <Card className="bg-[#1A3A24] border-none shadow-[0_12px_32px_rgba(0,0,0,0.4)] rounded-3xl p-6 relative overflow-hidden">
                 <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-[#1B5E20]/40 to-transparent pointer-events-none" />
-                
+
                 <div className="flex gap-5 relative z-10 items-center">
                   <img src={previewUrl!} alt="Crop" className="w-[100px] h-[100px] object-cover rounded-2xl shadow-lg border border-[#2a6b2c]" />
                   <div className="flex-1">
@@ -342,7 +336,7 @@ export default function App() {
                 <div className="mt-8 bg-[#0D2414] rounded-2xl p-5 flex items-center justify-between border border-[#2a6b2c]/30 shadow-inner">
                   <div>
                     <p className="text-[#c0c9bb] text-sm mb-1">{t.confidence}</p>
-                    <p className="text-white font-semibold text-lg">{prediction.confidence.toFixed(1)}% {t.analysisResult.split(' ')[0]}</p>
+                    <p className="text-white font-semibold text-lg">{prediction.confidence.toFixed(1)}%</p>
                   </div>
                   <ConfidenceRing value={prediction.confidence} />
                 </div>
@@ -364,8 +358,8 @@ export default function App() {
                   </div>
                 )}
 
-                <Button 
-                  onClick={resetState} 
+                <Button
+                  onClick={resetState}
                   variant="outline"
                   className="w-full mt-8 border-[#717a6d] text-[#e3e3de] hover:bg-[#2a6b2c] hover:text-white hover:border-[#2a6b2c] rounded-xl py-6 text-md font-medium"
                 >
