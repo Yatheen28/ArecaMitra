@@ -4,8 +4,7 @@ A full-stack web application designed to help farmers identify diseases in Areca
 
 ## Features
 - Upload leaf images via Gallery or Device Camera
-- Pre-trained TensorFlow model for disease prediction
-- Premium dark green farming UI (shadcn/ui + Tailwind + Framer Motion)
+- Trained model for disease prediction
 - Bilingual toggle between English and Kannada
 - Provides prediction confidence, health status, and actionable treatments
 
